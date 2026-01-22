@@ -52,4 +52,7 @@ def yazdır():
     win32print.EndDocPrinter(hprint)
     win32print.ClosePrinter(hprint)
 
+buttonyazdır = tk.Button(win, text="Yazdır", command=yazdır)
+buttonyazdır.pack()
+
 win.mainloop()
