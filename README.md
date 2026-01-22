@@ -1,3 +1,7 @@
 Desteklenen Platform: Windows
+
 Python 3.13.11 Kodlandı
-d
+
+.kpxpf = KodPixel-X-Printer-File Uzantısı Yapıldı
+
+.kpxpf  Uzantısı  Metinleri Saklamak İçin Yapıldı 
