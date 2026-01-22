@@ -14,9 +14,15 @@ for printer3 in printer8:
     print(printer3[2])
 
 
-def file():
-    global path
-    path = filedialog.askopenfiles(
+label = tk.Label(win, text="Hangi Yazıcıya Göndermek İstediğiniz Yazının Adını Yazınız")
+label.pack()
+
+entry = tk.Entry(win)
+entry.pack()
+
+
+def yazdır():
+    path = filedialog.askopenfilename(
         title="KodPixel-X-Printer",
         filetypes=[
             ("KodPixel-X-Printer-File", "*.kpxpf"),
@@ -25,29 +31,19 @@ def file():
             ("Png", "*.png"),
             ("Webp", "*.webp"),
             ("Tif", "*.tif")
-        ]
+        ]   
     )
-
-button = tk.Button(win, text="Dosya Aç", command=file)
-button.pack()
-
-label = tk.Label(win, text="Hangi Yazıcıya Göndermek İstediğiniz Yazının Adını Yazınız")
-label.pack()
-
-entry = tk.Entry(win)
-entry.pack()
-
-def entry2():
-    global entry3
+    
+    messagebox.showinfo("KodPixel-X-Printer", "Yazdırma İşlemine Geçiliyor")
     entry3 = entry.get()
-    global printer
     printer = entry3
-
-def yazdır():
     hprint = win32print.OpenPrinter(printer)
     win32print.StartDocPrinter(hprint, 1, ("KodPixel-X-Printer", None, "RAW"))
     win32print.StartPagePrinter(hprint)
-    win32print.WritePrinter(hprint, path)
+    with open(path, 'rb') as file:
+        file_data = file.read()
+
+    win32print.WritePrinter(hprint, file_data)
     win32print.EndPagePrinter(hprint)
     win32print.EndDocPrinter(hprint)
     win32print.ClosePrinter(hprint)
