@@ -9,19 +9,6 @@ win =  tk.Tk()
 win.title("KodPixel-X-Printer")
 win.geometry("520x530")
 
-printer8 = win32print.EnumPrinters(
-    win32print.PRINTER_ENUM_LOCAL | win32print.PRINTER_ENUM_CONNECTIONS
-)
-for printer3 in printer8:
-    print(printer3[2])
-
-
-label = tk.Label(win, text="Hangi Yazıcıya Göndermek İstediğiniz Yazının Adını Yazınız")
-label.pack()
-
-entry = tk.Entry(win)
-entry.pack()
-
 def dosyaşeç():
     global path
     path = filedialog.askopenfilename(
@@ -29,7 +16,6 @@ def dosyaşeç():
         filetypes=[
             ("KodPixel-X-Printer-File", "*.kpxpf"),
             ("Jpg", "*.jpg"),
-            ("Text", "*.txt"),
             ("Png", "*.png"),
             ("Webp", "*.webp"),
             ("Tif", "*.tif"),
@@ -37,9 +23,19 @@ def dosyaşeç():
         ]   
     )
 
-buttondosyaşeç = tk.Button(win, text="DOSYA ŞEÇ", command=dosyaşeç)
-buttondosyaşeç.pack()
 
+printer8 = win32print.EnumPrinters(
+    win32print.PRINTER_ENUM_LOCAL | win32print.PRINTER_ENUM_CONNECTIONS
+)
+for printer3 in printer8:
+    print(printer3[2])
+
+
+entry = tk.Entry(win)
+entry.pack()
+
+label = tk.Label(win, text="Hangi Yazıcıya Göndermek İstediğiniz Yazının Adını Yazınız")
+label.pack()
 
 eni = tk.Entry()
 eni.pack()
@@ -53,12 +49,26 @@ yüksekliği.pack()
 yüksekliğiLabel = tk.Label(win, text="Yükseliğini  Giriniz", font=("Arial", 9))
 yüksekliğiLabel.pack()
 
-renk = tk.Entry(win)
-renk.pack()
+menu = tk.Menu(win)
+win.config(menu=menu)
 
-RenkLabel = tk.Label(win, text="Renk Modunu Şeçiniz 'Siyah-Beyaz', 'Renkli' ", font=("Arial", 7))
-RenkLabel.pack()
+liste = tk.Menu(menu,tearoff=0)
+menu.add_cascade(label="DOSYA",menu=liste)
 
+liste2 = tk.Menu(menu,tearoff=0)
+menu.add_cascade(label="RENK",menu=liste2)
+
+
+def renkli():
+    img.convert('RGB')
+    
+
+def renksiz():
+    img.convert('1')
+
+liste.add_command(label="DOSYA SEÇ",command=dosyaşeç)
+liste2.add_command(label="RENKLİ",command=renkli)
+liste2.add_command(label="RENKSİZ",command=renksiz)
 
 def yazdır():
     messagebox.showinfo("KodPixel-X-Printer", "Yazdırma İşlemine Geçiliyor")
@@ -70,14 +80,9 @@ def yazdır():
     Hdc.StartDoc("KodPixel-X-Printer")
     Hdc.StartPage()
 
+    global img
     img = Image.open(path)
 
-    renk2 = renk.get()
-    if renk == "Siyah-Beyaz":
-        img.convert('1')
-    elif renk == "Renkli":
-        img.convert('RGB')
-    
     dib = ImageWin.Dib(img)
 
     eni2 = int(eni.get())
