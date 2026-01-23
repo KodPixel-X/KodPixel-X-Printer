@@ -1,4 +1,6 @@
 import win32print
+import win32ui
+from PIL import Image, ImageWin
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import filedialog
@@ -20,8 +22,8 @@ label.pack()
 entry = tk.Entry(win)
 entry.pack()
 
-
-def yazdır():
+def dosyaşeç():
+    global path
     path = filedialog.askopenfilename(
         title="KodPixel-X-Printer",
         filetypes=[
@@ -30,23 +32,62 @@ def yazdır():
             ("Text", "*.txt"),
             ("Png", "*.png"),
             ("Webp", "*.webp"),
-            ("Tif", "*.tif")
+            ("Tif", "*.tif"),
+            ("Pdf", "*.pdf")
         ]   
     )
-    
+
+buttondosyaşeç = tk.Button(win, text="DOSYA ŞEÇ", command=dosyaşeç)
+buttondosyaşeç.pack()
+
+
+eni = tk.Entry()
+eni.pack()
+
+labeleni = tk.Label(win, text="Eni Giriniz", font=("Arial", 10))
+labeleni.pack()
+
+yüksekliği = tk.Entry(win)
+yüksekliği.pack()
+
+yüksekliğiLabel = tk.Label(win, text="Yükseliğini  Giriniz", font=("Arial", 9))
+yüksekliğiLabel.pack()
+
+renk = tk.Entry(win)
+renk.pack()
+
+RenkLabel = tk.Label(win, text="Renk Modunu Şeçiniz 'Siyah-Beyaz', 'Renkli' ", font=("Arial", 7))
+RenkLabel.pack()
+
+
+def yazdır():
     messagebox.showinfo("KodPixel-X-Printer", "Yazdırma İşlemine Geçiliyor")
     entry3 = entry.get()
     printer = entry3
-    hprint = win32print.OpenPrinter(printer)
-    win32print.StartDocPrinter(hprint, 1, ("KodPixel-X-Printer", None, "RAW"))
-    win32print.StartPagePrinter(hprint)
-    with open(path, 'rb') as file:
-        file_data = file.read()
 
-    win32print.WritePrinter(hprint, file_data)
-    win32print.EndPagePrinter(hprint)
-    win32print.EndDocPrinter(hprint)
-    win32print.ClosePrinter(hprint)
+    Hdc = win32ui.CreateDC()
+    Hdc.CreatePrinterDC(printer)
+    Hdc.StartDoc("KodPixel-X-Printer")
+    Hdc.StartPage()
+
+    img = Image.open(path)
+
+    renk2 = renk.get()
+    if renk == "Siyah-Beyaz":
+        img.convert('1')
+    elif renk == "Renkli":
+        img.convert('RGB')
+    
+    dib = ImageWin.Dib(img)
+
+    eni2 = int(eni.get())
+    yüksekliği2 = int(yüksekliği.get())
+
+    dib.draw(Hdc.GetHandleOutput(), (0, 0, eni2, yüksekliği2))
+
+    Hdc.EndPage()
+    Hdc.EndDoc()
+    Hdc.DeleteDC()
 
 buttonyazdır = tk.Button(win, text="Yazdır", command=yazdır)
 buttonyazdır.pack()
