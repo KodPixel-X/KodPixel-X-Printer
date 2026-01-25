@@ -23,6 +23,12 @@ def dosyaşeç():
         ]   
     )
 
+    if path:
+        messagebox.showinfo("KodPixel-X-Printer", "Dosya Şeçildi")
+    
+    else:
+        messagebox.showinfo("KodPixel-X-Printer", "Dosya Şeçilmedi")
+
 
 printer8 = win32print.EnumPrinters(
     win32print.PRINTER_ENUM_LOCAL | win32print.PRINTER_ENUM_CONNECTIONS
@@ -60,11 +66,11 @@ menu.add_cascade(label="RENK",menu=liste2)
 
 
 def renkli():
-    img.convert('RGB')
+    img = img.convert('RGB')
     
 
 def renksiz():
-    img.convert('1')
+    img = img.convert('1')
 
 liste.add_command(label="DOSYA SEÇ",command=dosyaşeç)
 liste2.add_command(label="RENKLİ",command=renkli)
@@ -82,13 +88,19 @@ def yazdır():
 
     global img
     img = Image.open(path)
+    img.show()
 
     dib = ImageWin.Dib(img)
 
-    eni2 = int(eni.get())
-    yüksekliği2 = int(yüksekliği.get())
+    dpi = 96
 
-    dib.draw(Hdc.GetHandleOutput(), (0, 0, eni2, yüksekliği2))
+    eni2 = float(eni.get())
+    yüksekliği2 = float(yüksekliği.get())
+
+    eni2px = int(eni2 * dpi / 2.54 )
+    yüksekliği2px = int(yüksekliği2 * dpi / 2.54 )
+
+    dib.draw(Hdc.GetHandleOutput(), (0, 0,  eni2px, yüksekliği2px))
 
     Hdc.EndPage()
     Hdc.EndDoc()
